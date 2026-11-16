@@ -1,0 +1,64 @@
+LABORATORIO DEVSECOPS: PROMETHEUS, GRAFANA Y KIBANA
+===================================================
+
+Necesitas Docker Desktop, internet para la primera descarga y memoria
+suficiente para ELK (recomendado: 6 GB libres para Docker).
+
+1. Descomprime el ZIP que te dio el docente. Crea un repositorio vacío
+   en tu cuenta de GitHub, sin README, .gitignore ni licencia. Desde esta
+   carpeta ejecuta git init -b main, git add . y git commit -m "Inicio".
+   Copia de GitHub el comando git remote add origin ... de TU repositorio
+   y ejecuta git push -u origin main. La guía explica estos pasos.
+
+   Después haz doble clic en INICIAR-AQUI.cmd. Espera «Laboratorio listo»;
+   la primera vez puede tardar varios minutos.
+
+2. No crees la carpeta secrets/ ni las contraseñas a mano. El inicio las
+   genera automáticamente la primera vez y las muestra en la terminal:
+   Grafana: usuario admin
+   Kibana:  usuario alumno
+   Guarda esas claves en privado. Nunca compartas la carpeta secrets/.
+
+3. Abre guia-monitoreo-interactiva.html y sigue sus pasos cortos.
+
+   App:        http://localhost:8000
+   Prometheus: http://localhost:9090
+   Grafana:    http://localhost:3000
+   Kibana:     http://localhost:5601
+
+Si prefieres PowerShell, entra primero en esta carpeta (no en
+C:\WINDOWS\System32) y ejecuta:
+
+   .\iniciar-y-verificar.ps1
+
+El comando «docker compose ps -a» debe mostrar seis servicios en Running
+y security_setup en Exited (0). La app /error genera un error 500 de prueba.
+En Grafana, la URL de Prometheus es http://prometheus:9090.
+En Kibana, crea una Data View con logstash-* y @timestamp.
+
+Para detener sin borrar paneles ni logs:
+
+   docker compose down
+
+Si falla un servicio:
+
+   docker compose logs --tail=80
+
+SEGURIDAD DEL LABORATORIO
+-------------------------
+Elasticsearch exige autenticación. Grafana y Kibana usan claves generadas.
+Los puertos publicados se limitan a localhost. La app corre sin usuario
+administrador y con un sistema de archivos de solo lectura. El tráfico
+local usa HTTP, por lo que este kit es solo para una práctica en el equipo;
+no lo publiques en internet.
+
+JENKINS CON GITHUB (OPCIONAL)
+-----------------------------
+La guía HTML tiene un botón para abrir esta parte. Jenkins descarga el código
+desde GitHub, actualiza el kit local sin copiar secretos y verifica el
+laboratorio. Necesita Git, Docker Desktop y Jenkins en el mismo Windows.
+
+En Jenkins crea un trabajo Pipeline con parámetro de texto RUTA_KIT (ruta a
+esta carpeta). Usa "Pipeline script from SCM" > Git con la URL de TU
+repositorio, rama */main y Script Path Jenkinsfile. La guía muestra los
+clics y qué significa cada etapa.
