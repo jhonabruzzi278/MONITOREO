@@ -5,6 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
+COPY home.txt .
 
 # Ejecuta la aplicación sin privilegios de administrador.
 RUN groupadd --gid 10001 app && useradd --uid 10001 --gid app --no-create-home app

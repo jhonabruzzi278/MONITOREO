@@ -8,6 +8,7 @@ import json
 import os
 import urllib.request
 from datetime import datetime, timezone
+from pathlib import Path
 
 from flask import Flask, Response, request
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
@@ -63,7 +64,10 @@ def record_request(response):
 # Rutas de práctica: / responde bien y /error produce un fallo intencional.
 @app.get("/")
 def home():
-    return Response("Servicio de prueba activo. Visita /error para generar un error controlado.\n", mimetype="text/plain")
+    # Jenkins publica un mensaje en el volumen compartido; antes se usa el inicial.
+    published = Path("/release/home.txt")
+    source = published if published.is_file() else Path("/app/home.txt")
+    return Response(source.read_text(encoding="utf-8"), mimetype="text/plain")
 
 
 @app.get("/error")

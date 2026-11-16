@@ -11,6 +11,8 @@ services:
     environment:
       LOGSTASH_URL: http://logstash:8080
       PYTHONDONTWRITEBYTECODE: "1"
+    volumes:
+      - release_data:/release:ro
     depends_on:
       - logstash
     restart: unless-stopped
@@ -139,11 +141,40 @@ services:
         condition: service_completed_successfully
     restart: unless-stopped
 
+  # Prepara el volumen para que Jenkins publique sin permisos de administrador.
+  release_init:
+    image: alpine:3.20
+    profiles: [jenkins]
+    command: ["sh", "-c", "chown 1000:1000 /release"]
+    volumes:
+      - release_data:/release
+    restart: "no"
+
+  # Jenkins es opcional: lee GitHub y publica un mensaje visible en la app.
+  jenkins:
+    build: ./jenkins
+    profiles: [jenkins]
+    ports:
+      - "127.0.0.1:${LAB_JENKINS_PORT:-8080}:8080"
+    environment:
+      JAVA_OPTS: -Xms256m -Xmx768m
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - release_data:/release
+    depends_on:
+      release_init:
+        condition: service_completed_successfully
+      flask_service:
+        condition: service_healthy
+    restart: unless-stopped
+
 # Estos volúmenes conservan métricas, paneles y logs al reiniciar.
 volumes:
   prometheus_data:
   grafana_data:
   elasticsearch_data:
+  jenkins_data:
+  release_data:
 
 secrets:
   elastic_password:

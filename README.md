@@ -12,6 +12,6 @@ Actividad con una app de ejemplo, Prometheus, Grafana, Elasticsearch, Logstash y
 
 El iniciador crea las contraseñas en `secrets/` y las muestra en su ventana. Esa carpeta se excluye de Git; no la publiques.
 
-La parte **Jenkins con GitHub** es opcional. Al llegar allí, pulsa el botón de la guía si quieres continuar. Jenkins usa el `Jenkinsfile` de **tu repositorio** para simular una entrega local.
+La parte **Jenkins con GitHub** es opcional. Al llegar allí, pulsa el botón de la guía si quieres continuar. Haz doble clic en **INICIAR-JENKINS.cmd**: Jenkins se inicia en el mismo Docker Compose y usa el `Jenkinsfile` de **tu repositorio**. No necesita acceso al motor Docker.
 
 Más ayuda: [LEEME.txt](LEEME.txt).
